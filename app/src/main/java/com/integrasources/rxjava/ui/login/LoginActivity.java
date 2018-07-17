@@ -1,13 +1,14 @@
 package com.integrasources.rxjava.ui.login;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.arellomobile.mvp.MvpAppCompatActivity;
+import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.integrasources.rxjava.R;
 import com.integrasources.rxjava.ui.main.MainActivity;
 import com.jakewharton.rxbinding2.widget.RxTextView;
@@ -16,21 +17,20 @@ import io.reactivex.Observable;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 
-public class LoginActivity extends AppCompatActivity implements LoginView {
+public class LoginActivity extends MvpAppCompatActivity implements LoginView {
+
+    @InjectPresenter
+    LoginPresenter mLoginPresenter;
 
     View mLoginProgress;
     EditText mLoginName;
     EditText mLoginPass;
     Button mLoginButton;
-    LoginPresenter mLoginPresenter = new LoginPresenter();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        // Attach view to presenter
-        mLoginPresenter.attachView(this);
 
         // Find IDs
         mLoginName = findViewById(R.id.loginName);
@@ -49,14 +49,6 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
 
         // Set validator
         setLoginPasswordValidator();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        // Detach view from presenter
-        mLoginPresenter.detachView();
     }
 
     @Override

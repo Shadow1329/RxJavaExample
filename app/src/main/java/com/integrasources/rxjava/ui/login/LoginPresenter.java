@@ -1,18 +1,19 @@
 package com.integrasources.rxjava.ui.login;
 
+import com.arellomobile.mvp.InjectViewState;
+import com.arellomobile.mvp.MvpPresenter;
 import com.integrasources.rxjava.data.AccountManager;
-import com.integrasources.rxjava.ui.BasePresenter;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 
-class LoginPresenter extends BasePresenter<LoginView>{
+@InjectViewState
+public class LoginPresenter extends MvpPresenter<LoginView> {
 
     // Check account
     void onCheckAccount(String name, String password) {
         // Show progress bar
-        if (isViewAttached())
-            getView().onShowProgress();
+        getViewState().onShowProgress();
 
         // Check account
         AccountManager.checkAccount(name, password)
@@ -22,16 +23,13 @@ class LoginPresenter extends BasePresenter<LoginView>{
                     public void accept(Boolean result) throws Exception {
 
                         // Hide progress bar
-                        if (isViewAttached())
-                            getView().onHideProgress();
+                        getViewState().onHideProgress();
 
                         // Handle result
                         if (result) {
-                            if (isViewAttached())
-                                getView().onStartMain();
+                            getViewState().onStartMain();
                         } else {
-                            if (isViewAttached())
-                                getView().onShowError("Login or password failed");
+                            getViewState().onShowError("Login or password failed");
                         }
                     }
                 });
